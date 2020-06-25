@@ -26,17 +26,3 @@ Map<String, dynamic> _$CookieModelToJson(CookieModel instance) =>
       'isNewProduct': instance.isNewProduct,
       'price': instance.price,
     };
-
-CookieList _$CookieListFromJson(Map<String, dynamic> json) {
-  return CookieList(
-    (json['cookies'] as List)
-        ?.map((e) =>
-            e == null ? null : CookieModel.fromJson(e as Map<String, dynamic>))
-        ?.toList(),
-  );
-}
-
-Map<String, dynamic> _$CookieListToJson(CookieList instance) =>
-    <String, dynamic>{
-      'cookies': instance.cookies,
-    };

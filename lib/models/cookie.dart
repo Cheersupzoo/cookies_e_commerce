@@ -56,17 +56,17 @@ class CookieModel extends Equatable {
   Map<String, dynamic> toJson() => _$CookieModelToJson(this);
 }
 
-@JsonSerializable()
+//@JsonSerializable()
 class CookieList extends Equatable {
   final List<CookieModel> cookies;
 
-  CookieList(this.cookies);
+  CookieList({this.cookies});
 
   @override
   List<Object> get props => [cookies];
 
-  factory CookieList.fromJson(Map<String, dynamic> json) =>
-      _$CookieListFromJson(json);
+  factory CookieList.fromJson(List<dynamic> json) =>
+      CookieList(cookies: json.map((i) => CookieModel.fromJson(i)).toList());
 
-  Map<String, dynamic> toJson() => _$CookieListToJson(this);
+  /* Map<String, dynamic> toJson() => _$CookieListToJson(this); */
 }
