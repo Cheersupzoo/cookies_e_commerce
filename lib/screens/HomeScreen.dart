@@ -1,10 +1,12 @@
 import 'dart:async';
 
 import 'package:cookies_e_commerce/models/cookie.dart';
+import 'package:cookies_e_commerce/screens/screens.dart';
 import 'package:cookies_e_commerce/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cookies_e_commerce/blocs/cookies/cookies.dart';
+
 
 class HomeScreen extends StatefulWidget {
   final String title;
@@ -59,6 +61,7 @@ class _CookieGridListState extends State<CookieGridList> {
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w800,
+                        color: Colors.black87
                       ),
                     ),
                   ),
@@ -81,3 +84,5 @@ class _CookieGridListState extends State<CookieGridList> {
         });
   }
 }
+
+
