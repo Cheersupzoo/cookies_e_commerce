@@ -48,19 +48,57 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
             return LoadingIndicator(key: Key('__CookiesLoading'));
           } else if (cookiesState is CookiesLoaded) {
             List<CookieModel> cookies = cookiesState.cookies.cookies;
-            return SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  _buildHeaderText(),
-                  _buildCookieCardWarpList(context, cookies),
-                ],
-              ),
-            );
+            return cookies.length > 0
+                ? SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        _buildHeaderText(),
+                        _buildCookieCardWarpList(context, cookies),
+                      ],
+                    ),
+                  )
+                : Center(
+                    child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text("No cookies to show.",style: TextStyle(fontSize:16),),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      Icon(Icons.sentiment_dissatisfied,size: 48,),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      FloatingActionButton(
+                          onPressed: () => cookiesBloc.add(FetchCookies()),
+                          child: Icon(Icons.refresh))
+                    ],
+                  ));
           } else if (cookiesState is CookiesNotLoaded) {
-            return Center(child: Text(cookiesState.errorMessage));
+            return _buildRefreshFAB(cookiesState, cookiesBloc);
           }
         });
+  }
+
+  Center _buildRefreshFAB(
+      CookiesNotLoaded cookiesState, CookiesBloc cookiesBloc) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Text(cookiesState.errorMessage, textAlign: TextAlign.center,style: TextStyle(fontSize:16)),
+          SizedBox(
+            height: 16,
+          ),
+          FloatingActionButton(
+              onPressed: () => cookiesBloc.add(FetchCookies()),
+              child: Icon(Icons.refresh))
+        ],
+      ),
+    );
   }
 
   Container _buildCookieCardWarpList(
