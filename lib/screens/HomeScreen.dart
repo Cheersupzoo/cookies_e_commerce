@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cookies_e_commerce/blocs/cookies/cookies.dart';
 
-
 class HomeScreen extends StatefulWidget {
   final String title;
   HomeScreen({Key key, this.title}) : super(key: key);
@@ -25,19 +24,19 @@ class _HomeScreenState extends State<HomeScreen> {
         "Products",
         style: TextStyle(fontWeight: FontWeight.w700, fontSize: 22),
       )),
-      body: CookieGridList(),
+      body: HomeScreenBody(),
     );
   }
 }
 
-class CookieGridList extends StatefulWidget {
-  CookieGridList({Key key}) : super(key: key);
+class HomeScreenBody extends StatefulWidget {
+  HomeScreenBody({Key key}) : super(key: key);
 
   @override
-  _CookieGridListState createState() => _CookieGridListState();
+  _HomeScreenBodyState createState() => _HomeScreenBodyState();
 }
 
-class _CookieGridListState extends State<CookieGridList> {
+class _HomeScreenBodyState extends State<HomeScreenBody> {
   @override
   Widget build(BuildContext context) {
     final cookiesBloc = BlocProvider.of<CookiesBloc>(context);
@@ -53,28 +52,8 @@ class _CookieGridListState extends State<CookieGridList> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16.0, vertical: 12.0),
-                    child: Text(
-                      'Start picking your treats',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w800,
-                        color: Colors.black87
-                      ),
-                    ),
-                  ),
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    padding: EdgeInsets.only(bottom: 8.0),
-                    child: Wrap(
-                        direction: Axis.horizontal,
-                        alignment: WrapAlignment.spaceEvenly,
-                        children: cookies
-                            .map((cookie) => CookieCard(cookie: cookie))
-                            .toList()),
-                  ),
+                  _buildHeaderText(),
+                  _buildCookieCardWarpList(context, cookies),
                 ],
               ),
             );
@@ -83,6 +62,31 @@ class _CookieGridListState extends State<CookieGridList> {
           }
         });
   }
+
+  Container _buildCookieCardWarpList(BuildContext context, List<CookieModel> cookies) {
+    return Container(
+                  width: MediaQuery.of(context).size.width,
+                  padding: EdgeInsets.only(bottom: 8.0),
+                  child: Wrap(
+                      direction: Axis.horizontal,
+                      alignment: WrapAlignment.spaceEvenly,
+                      children: cookies
+                          .map((cookie) => CookieCard(cookie: cookie))
+                          .toList()),
+                );
+  }
+
+  Padding _buildHeaderText() {
+    return Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 12.0),
+                  child: Text(
+                    'Start picking your treats',
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.black87),
+                  ),
+                );
+  }
 }
-
-

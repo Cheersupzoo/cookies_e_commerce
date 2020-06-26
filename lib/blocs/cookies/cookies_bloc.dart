@@ -25,10 +25,7 @@ class CookiesBloc extends Bloc<CookiesEvent, CookiesState> {
 
   Stream<CookiesState> _mapFetchCookiesToState() async* {
     try {
-      print('try');
       final cookies = await CookieNetworkHandle().fetchCookie();
-      print('after fetch');
-      print(cookies.cookies.length);
       yield CookiesLoaded(cookies);
     } catch (error) {
       print(error);
