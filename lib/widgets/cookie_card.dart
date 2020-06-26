@@ -1,76 +1,102 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cookies_e_commerce/models/cookie.dart';
 import 'package:cookies_e_commerce/screens/screens.dart';
-import 'package:cookies_e_commerce/transitions/fade_page_route.dart';
 import 'package:cookies_e_commerce/widgets/loading_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:animations/animations.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+class OpenCookieContainer extends StatelessWidget {
+  final CookieModel cookie;
+  const OpenCookieContainer({Key key, this.cookie}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return OpenContainer<bool>(
+      transitionDuration: const Duration(milliseconds: 400),
+      transitionType: ContainerTransitionType.fade,
+      openBuilder: (BuildContext context, VoidCallback _) {
+        return DetailScreen(cookie: cookie);
+      },
+      tappable: false,
+      closedBuilder: (BuildContext _, VoidCallback openContainer) {
+        return CookieCard(openContainer: openContainer, cookie: cookie);
+      },
+    );
+  }
+}
+
+class _CookieCardWrapper extends StatelessWidget {
+  final CookieModel cookie;
+  final VoidCallback openContainer;
+  const _CookieCardWrapper({Key key, @required this.cookie, this.openContainer})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return CookieCard(
+      cookie: cookie,
+    );
+  }
+}
+
 class CookieCard extends StatelessWidget {
   final CookieModel cookie;
+  final VoidCallback openContainer;
 
-  const CookieCard({Key key, this.cookie}) : super(key: key);
+  const CookieCard({Key key, @required this.cookie, this.openContainer})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final cardHeight = 250.0;
-    final cardWidth = 180.0;
+    final cardWidth = 170.0;
     //print(cookie.image);
     return Stack(children: <Widget>[
-      _buildCardBackground(cardWidth, cardHeight),
-      Card(
-        elevation: 0.0,
-        clipBehavior: Clip.antiAlias,
+      InkWell(
+        onTap: openContainer,
         child: Container(
           width: cardWidth,
           height: cardHeight,
-          child: InkWell(
-            onTap: () => Navigator.of(context).push(FadePageRoute(
-                builder: (BuildContext context) => DetailPage(cookie: cookie))),
-            child: Container(
-              width: cardWidth,
-              height: cardHeight,
-              child: Column(children: <Widget>[
-                _buildCookieImage(),
-                _buildCookieDetail(),
-              ]),
-            ),
+          child: Container(
+            width: cardWidth,
+            height: cardHeight,
+            child: Column(children: <Widget>[
+              _buildCookieImage(),
+              _buildCookieDetail(),
+            ]),
           ),
         ),
       )
     ]);
   }
 
-  Hero _buildCardBackground(double cardWidth, double cardHeight) {
-    return Hero(
-      tag: 'card${cookie.id}',
-      child: Card(
-          elevation: 0.5,
-          clipBehavior: Clip.antiAlias,
-          color: Colors.white,
-          child: SizedBox(
-            width: cardWidth,
-            height: cardHeight,
-          )),
-    );
+  Card _buildCardBackground(double cardWidth, double cardHeight) {
+    return Card(
+        elevation: 0.5,
+        clipBehavior: Clip.antiAlias,
+        color: Colors.white,
+        child: SizedBox(
+          width: cardWidth,
+          height: cardHeight,
+        ));
   }
 
   Expanded _buildCookieDetail() {
     return Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      _buildTitleText(),
-                      const SizedBox(height: 4),
-                      _buildPriceText(),
-                    ],
-                  ),
-                ),
-              );
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            _buildTitleText(),
+            const SizedBox(height: 8),
+            _buildPriceText(),
+          ],
+        ),
+      ),
+    );
   }
 
   Text _buildPriceText() {
@@ -84,7 +110,7 @@ class CookieCard extends StatelessWidget {
   Text _buildTitleText() {
     return Text(
       cookie.title,
-      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+      style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
     );
   }
 
@@ -124,41 +150,38 @@ class CachedNetworkImageExtend extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Hero(
-      tag: 'Image$id',
-      child: CachedNetworkImage(
-        imageUrl: url,
-        fit: BoxFit.fitHeight,
-        width: double.infinity,
-        height: height,
-        fadeInDuration: Duration(milliseconds: 800),
-        fadeOutDuration: Duration(milliseconds: 400),
-        imageBuilder:
-            (BuildContext context, ImageProvider<dynamic> imageProvider) {
-          return Stack(children: <Widget>[
-            Align(
-                alignment: Alignment.bottomCenter,
-                child: CustomPaint(
-                  painter: CircularShadow(height),
-                )),
-            Align(
-              alignment: Alignment.center,
-              child: Image(
-                height: height,
-                fit: BoxFit.fitHeight,
-                image: imageProvider,
-              ),
-            )
-          ]);
-        },
-        placeholder: (context, url) => LoadingIndicator(),
-        errorWidget: (context, url, error) {
-          return Image(
-              fit: BoxFit.contain,
-              image: AssetImage('assets/image-not-found.png'),
-              width: 30);
-        },
-      ),
+    return CachedNetworkImage(
+      imageUrl: url,
+      fit: BoxFit.fitHeight,
+      width: double.infinity,
+      height: height,
+      fadeInDuration: Duration(milliseconds: 800),
+      fadeOutDuration: Duration(milliseconds: 400),
+      imageBuilder:
+          (BuildContext context, ImageProvider<dynamic> imageProvider) {
+        return Stack(children: <Widget>[
+          Align(
+              alignment: Alignment.bottomCenter,
+              child: CustomPaint(
+                painter: CircularShadow(height),
+              )),
+          Align(
+            alignment: Alignment.center,
+            child: Image(
+              height: height,
+              fit: BoxFit.fitHeight,
+              image: imageProvider,
+            ),
+          )
+        ]);
+      },
+      placeholder: (context, url) => LoadingIndicator(),
+      errorWidget: (context, url, error) {
+        return Image(
+            fit: BoxFit.contain,
+            image: AssetImage('assets/image-not-found.png'),
+            width: 30);
+      },
     );
   }
 }
@@ -188,24 +211,28 @@ class CircularShadow extends CustomPainter {
   }
 }
 
-class _OpenContainerWrapper extends StatelessWidget {
-  const _OpenContainerWrapper({
-    this.closedBuilder,
-    this.transitionType,
+class _InkWellOverlay extends StatelessWidget {
+  const _InkWellOverlay({
+    this.openContainer,
+    this.width,
+    this.height,
+    this.child,
   });
 
-  final OpenContainerBuilder closedBuilder;
-  final ContainerTransitionType transitionType;
+  final VoidCallback openContainer;
+  final double width;
+  final double height;
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
-    return OpenContainer<bool>(
-      transitionType: transitionType,
-      openBuilder: (BuildContext context, VoidCallback _) {
-        return const DetailPage();
-      },
-      tappable: false,
-      closedBuilder: closedBuilder,
+    return SizedBox(
+      height: height,
+      width: width,
+      child: InkWell(
+        onTap: openContainer,
+        child: child,
+      ),
     );
   }
 }

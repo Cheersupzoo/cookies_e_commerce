@@ -22,7 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
           title: Text(
         "Products",
-        style: TextStyle(fontWeight: FontWeight.w700, fontSize: 22),
+        /* style: TextStyle(fontWeight: FontWeight.w700, fontSize: 22), */
       )),
       body: HomeScreenBody(),
     );
@@ -63,30 +63,29 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
         });
   }
 
-  Container _buildCookieCardWarpList(BuildContext context, List<CookieModel> cookies) {
+  Container _buildCookieCardWarpList(
+      BuildContext context, List<CookieModel> cookies) {
     return Container(
-                  width: MediaQuery.of(context).size.width,
-                  padding: EdgeInsets.only(bottom: 8.0),
-                  child: Wrap(
-                      direction: Axis.horizontal,
-                      alignment: WrapAlignment.spaceEvenly,
-                      children: cookies
-                          .map((cookie) => CookieCard(cookie: cookie))
-                          .toList()),
-                );
+      width: MediaQuery.of(context).size.width,
+      padding: EdgeInsets.only(bottom: 8.0),
+      child: Wrap(
+          direction: Axis.horizontal,
+          alignment: WrapAlignment.spaceEvenly,
+          runSpacing: 16.0,
+          children: cookies
+              .map((cookie) => OpenCookieContainer(cookie: cookie))
+              .toList()),
+    );
   }
 
   Padding _buildHeaderText() {
     return Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0, vertical: 12.0),
-                  child: Text(
-                    'Start picking your treats',
-                    style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w800,
-                        color: Colors.black87),
-                  ),
-                );
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+      child: Text(
+        'Start picking your treats',
+        style: TextStyle(
+            fontSize: 20, fontWeight: FontWeight.w800, color: Colors.black87),
+      ),
+    );
   }
 }
