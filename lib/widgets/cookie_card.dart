@@ -1,7 +1,5 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cookies_e_commerce/models/cookie.dart';
 import 'package:cookies_e_commerce/screens/screens.dart';
-import 'package:cookies_e_commerce/widgets/loading_indicator.dart';
 import 'package:cookies_e_commerce/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:animations/animations.dart';

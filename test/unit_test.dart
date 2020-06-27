@@ -1,7 +1,3 @@
-
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:cookies_e_commerce/models/cookie.dart';
 import 'package:cookies_e_commerce/providers/networks.dart';
 import 'package:flutter_test/flutter_test.dart';

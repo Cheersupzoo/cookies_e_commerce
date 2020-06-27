@@ -6,15 +6,12 @@
 // tree, read text, and verify that the values of widget properties are correct.
 
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:cookies_e_commerce/blocs/blocs.dart';
 import 'package:cookies_e_commerce/keys.dart';
 import 'package:cookies_e_commerce/models/cookie.dart';
-import 'package:cookies_e_commerce/providers/networks.dart';
 import 'package:cookies_e_commerce/screens/DetailScreen.dart';
 import 'package:cookies_e_commerce/screens/screens.dart';
-import 'package:cookies_e_commerce/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -22,7 +19,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:cookies_e_commerce/main.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mockito/mockito.dart';
-import 'package:http/http.dart' as http;
 import 'package:bloc_test/bloc_test.dart';
 
 class MockCookiesBloc extends MockBloc<CookiesEvent, CookiesState>
@@ -40,10 +36,9 @@ void main() {
 
       await tester.pumpAndSettle();
       // get 404 network
-      expect(find.text("Something Went Wrong.\nPlease try to refresh again."),
+      expect(find.text("Something Went Wrong.\nTap screen to refresh."),
           findsOneWidget);
-      expect(find.byIcon(Icons.refresh), findsOneWidget);
-
+      expect(find.byIcon(Icons.error_outline), findsOneWidget);
     });
 
     testWidgets('DetailScreen with Dummy isNewProduct: true',
@@ -135,7 +130,7 @@ void main() {
       // get error message
       expect(find.text("Something Went Wrong.\nPlease try to refresh again."),
           findsOneWidget);
-      expect(find.byIcon(Icons.refresh), findsOneWidget);
+      expect(find.byIcon(Icons.error_outline), findsOneWidget);
     });
 
     testWidgets('should show Loading indicator when state is CookiesLoading',
@@ -200,7 +195,8 @@ void main() {
       expect(find.text("NEW"), findsWidgets);
     });
 
-    testWidgets('should show Blank Cookie List when state is CookiesLoadedWithEmptyList',
+    testWidgets(
+        'should show Blank Cookie List when state is CookiesLoadedWithEmptyList',
         (WidgetTester tester) async {
       when(cookiesBloc.state).thenAnswer(
         (_) => CookiesLoadedWithEmptyList(),

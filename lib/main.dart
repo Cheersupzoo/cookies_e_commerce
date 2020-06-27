@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cookies_e_commerce/blocs/cookies/cookies.dart';
 import 'package:cookies_e_commerce/screens/HomeScreen.dart';
