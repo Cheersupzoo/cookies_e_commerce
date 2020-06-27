@@ -36,7 +36,7 @@ class CookiesBloc extends Bloc<CookiesEvent, CookiesState> {
         yield CookiesNotLoaded("Network Error: Status $error");
       else
         yield CookiesNotLoaded(
-            "Something Went Wrong.\nPlease try to refresh again.");
+            "Something Went Wrong.\nTap screen to refresh.");
     }
   }
 }

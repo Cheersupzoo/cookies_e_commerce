@@ -58,61 +58,84 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
               ),
             );
           } else if (cookiesState is CookiesLoadedWithEmptyList) {
-            return Center(
-                child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  "No cookies to show.",
-                  style: TextStyle(fontSize: 16),
-                ),
-                SizedBox(
-                  height: 8,
-                ),
-                Icon(
-                  Icons.sentiment_dissatisfied,
-                  size: 48,
-                ),
-                SizedBox(
-                  height: 8,
-                ),
-                FloatingActionButton(
-                    onPressed: () => cookiesBloc.add(FetchCookies()),
-                    child: Icon(Icons.refresh))
-              ],
-            ));
+            return _buildCookiesLoadedWithEmptyList(cookiesBloc);
           } else if (cookiesState is CookiesNotLoaded) {
-            return _buildRefreshFAB(cookiesState, cookiesBloc);
+            return _buildCookiesNotLoaded(cookiesState, cookiesBloc, context);
           }
         });
   }
 
-  Center _buildRefreshFAB(
-      CookiesNotLoaded cookiesState, CookiesBloc cookiesBloc) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Text(cookiesState.errorMessage,
-              textAlign: TextAlign.center, style: TextStyle(fontSize: 16)),
-          SizedBox(
-            height: 16,
+  Widget _buildCookiesLoadedWithEmptyList(CookiesBloc cookiesBloc) {
+    return GestureDetector(
+      onTap: () => cookiesBloc.add(FetchCookies()),
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        color: Colors.black.withAlpha(0),
+        child: Center(
+            child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Icon(
+              Icons.sentiment_dissatisfied,
+              size: 48,
+              color: Colors.grey[850],
+            ),
+            SizedBox(
+              height: 8,
+            ),
+            Text(
+              "No cookies to show.",
+              style: TextStyle(fontSize: 16),
+            ),
+            SizedBox(
+              height: 8,
+            ),
+            Text(
+              "Tap screen to refresh.",
+              style: TextStyle(fontSize: 16),
+            ),
+          ],
+        )),
+      ),
+    );
+  }
+
+  Widget _buildCookiesNotLoaded(CookiesNotLoaded cookiesState,
+      CookiesBloc cookiesBloc, BuildContext context) {
+    return GestureDetector(
+      onTap: () => cookiesBloc.add(FetchCookies()),
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        color: Colors.black.withAlpha(0),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Icon(
+              Icons.error_outline,
+              size: 48,
+              color: Colors.grey[850],
+            ),
+              
+              Text(cookiesState.errorMessage,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 16, height: 2)),
+            ],
           ),
-          FloatingActionButton(
-              onPressed: () => cookiesBloc.add(FetchCookies()),
-              child: Icon(Icons.refresh))
-        ],
+        ),
       ),
     );
   }
 
   Container _buildCookieCardWarpList(
       BuildContext context, List<CookieModel> cookies) {
-        double width = MediaQuery.of(context).size.width;
-        var widgetPerRow = (width ~/ 172);
-        var countBlankSizedBox = widgetPerRow - cookies.length % widgetPerRow;
+    double width = MediaQuery.of(context).size.width;
+    var widgetPerRow = (width ~/ 172);
+    var countBlankSizedBox = widgetPerRow - cookies.length % widgetPerRow;
     return Container(
       width: MediaQuery.of(context).size.width,
       padding: EdgeInsets.only(bottom: 8.0),
@@ -124,10 +147,11 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
             ...cookies
                 .map((cookie) => OpenCookieContainer(cookie: cookie))
                 .toList(),
-            ...List<Widget>.generate(countBlankSizedBox, (index) => SizedBox(
-              width: 172,
-            ))
-            
+            ...List<Widget>.generate(
+                countBlankSizedBox,
+                (index) => SizedBox(
+                      width: 172,
+                    ))
           ]),
     );
   }
