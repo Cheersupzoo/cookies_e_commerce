@@ -48,34 +48,40 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
             return LoadingIndicator(key: Key('__CookiesLoading'));
           } else if (cookiesState is CookiesLoaded) {
             List<CookieModel> cookies = cookiesState.cookies.cookies;
-            return cookies.length > 0
-                ? SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        _buildHeaderText(),
-                        _buildCookieCardWarpList(context, cookies),
-                      ],
-                    ),
-                  )
-                : Center(
-                    child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text("No cookies to show.",style: TextStyle(fontSize:16),),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      Icon(Icons.sentiment_dissatisfied,size: 48,),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      FloatingActionButton(
-                          onPressed: () => cookiesBloc.add(FetchCookies()),
-                          child: Icon(Icons.refresh))
-                    ],
-                  ));
+            return SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  _buildHeaderText(),
+                  _buildCookieCardWarpList(context, cookies),
+                ],
+              ),
+            );
+          } else if (cookiesState is CookiesLoadedWithEmptyList) {
+            return Center(
+                child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  "No cookies to show.",
+                  style: TextStyle(fontSize: 16),
+                ),
+                SizedBox(
+                  height: 8,
+                ),
+                Icon(
+                  Icons.sentiment_dissatisfied,
+                  size: 48,
+                ),
+                SizedBox(
+                  height: 8,
+                ),
+                FloatingActionButton(
+                    onPressed: () => cookiesBloc.add(FetchCookies()),
+                    child: Icon(Icons.refresh))
+              ],
+            ));
           } else if (cookiesState is CookiesNotLoaded) {
             return _buildRefreshFAB(cookiesState, cookiesBloc);
           }
@@ -89,7 +95,8 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Text(cookiesState.errorMessage, textAlign: TextAlign.center,style: TextStyle(fontSize:16)),
+          Text(cookiesState.errorMessage,
+              textAlign: TextAlign.center, style: TextStyle(fontSize: 16)),
           SizedBox(
             height: 16,
           ),
@@ -103,6 +110,9 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
 
   Container _buildCookieCardWarpList(
       BuildContext context, List<CookieModel> cookies) {
+        double width = MediaQuery.of(context).size.width;
+        var widgetPerRow = (width ~/ 172);
+        var countBlankSizedBox = widgetPerRow - cookies.length % widgetPerRow;
     return Container(
       width: MediaQuery.of(context).size.width,
       padding: EdgeInsets.only(bottom: 8.0),
@@ -110,9 +120,15 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
           direction: Axis.horizontal,
           alignment: WrapAlignment.spaceEvenly,
           runSpacing: 16.0,
-          children: cookies
-              .map((cookie) => OpenCookieContainer(cookie: cookie))
-              .toList()),
+          children: <Widget>[
+            ...cookies
+                .map((cookie) => OpenCookieContainer(cookie: cookie))
+                .toList(),
+            ...List<Widget>.generate(countBlankSizedBox, (index) => SizedBox(
+              width: 172,
+            ))
+            
+          ]),
     );
   }
 
