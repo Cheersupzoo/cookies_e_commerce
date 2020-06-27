@@ -23,6 +23,12 @@ class CookiesLoaded extends CookiesState {
   String toString() => 'CookiesLoaded';
 }
 
+class CookiesLoadedWithEmptyList extends CookiesState {
+
+  @override
+  String toString() => 'CookiesLoaded';
+}
+
 class CookiesNotLoaded extends CookiesState {
   final String errorMessage;
 

@@ -50,22 +50,28 @@ class CookieCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cardHeight = 250.0;
-    final cardWidth = 170.0;
-    //print(cookie.image);
+    final cardWidth = 172.0;
     return Stack(children: <Widget>[
       InkWell(
         onTap: openContainer,
         child: Container(
           width: cardWidth,
           height: cardHeight,
-          child: Container(
-            width: cardWidth,
-            height: cardHeight,
-            child: Column(children: <Widget>[
-              _buildCookieImage(),
-              _buildCookieDetail(),
-            ]),
-          ),
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Spacer(
+                  flex: 2,
+                ),
+                _buildCookieImage(),
+                Spacer(
+                  flex: 2,
+                ),
+                _buildCookieDetail(),
+                Spacer(
+                  flex: 1,
+                ),
+              ]),
         ),
       )
     ]);
@@ -82,19 +88,17 @@ class CookieCard extends StatelessWidget {
         ));
   }
 
-  Expanded _buildCookieDetail() {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            _buildTitleText(),
-            const SizedBox(height: 8),
-            _buildPriceText(),
-          ],
-        ),
+  Padding _buildCookieDetail() {
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          _buildTitleText(),
+          const SizedBox(height: 8),
+          _buildPriceText(),
+        ],
       ),
     );
   }
@@ -117,7 +121,7 @@ class CookieCard extends StatelessWidget {
   Container _buildCookieImage() {
     return Container(
       color: Colors.white,
-      height: 160,
+      height: 138,
       child: Stack(children: <Widget>[
         Center(
           child: CachedNetworkImageExtend(
@@ -125,7 +129,7 @@ class CookieCard extends StatelessWidget {
         ),
         cookie.isNewProduct
             ? Positioned(
-                top: 15,
+                top: 5,
                 right: 15,
                 child: Text(
                   "NEW",
@@ -195,7 +199,6 @@ class CircularShadow extends CustomPainter {
     canvas.translate(
         size.width / 2, size.height / 2 - 25 * (height - 120) / 100);
     Offset center = Offset(0.0, 0.0);
-    // draw shadow first
     Path oval = Path()
       ..addOval(Rect.fromCenter(
           center: center, width: 110 * height / 120, height: 5 * height / 120));
@@ -210,4 +213,3 @@ class CircularShadow extends CustomPainter {
     return false;
   }
 }
-

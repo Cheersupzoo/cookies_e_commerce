@@ -34,17 +34,6 @@ class DetailScreen extends StatelessWidget {
     );
   }
 
-  Card _buildCardBackground(BuildContext context) {
-    return Card(
-        elevation: 0.5,
-        clipBehavior: Clip.antiAlias,
-        color: Colors.white,
-        child: SizedBox(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-        ));
-  }
-
   Container _buildCookieImage(BuildContext context) {
     return Container(
       height: 320,

@@ -26,13 +26,17 @@ class CookiesBloc extends Bloc<CookiesEvent, CookiesState> {
   Stream<CookiesState> _mapFetchCookiesToState() async* {
     try {
       yield CookiesLoading();
-      final cookies = await CookieNetworkHandle().fetchCookie();
-      yield CookiesLoaded(cookies);
+      final client = CookieNetworkHandle();
+      final cookies = await client.fetchCookie();
+      if (cookies.cookies.length > 0) yield CookiesLoaded(cookies);
+      else yield CookiesLoadedWithEmptyList();
     } catch (error) {
       print(error);
-      if(error == 404)
+      if (error == 404)
         yield CookiesNotLoaded("Network Error: Status $error");
-      else yield CookiesNotLoaded("Something Went Wrong.\nPlease try to refresh again.");
+      else
+        yield CookiesNotLoaded(
+            "Something Went Wrong.\nPlease try to refresh again.");
     }
   }
 }
