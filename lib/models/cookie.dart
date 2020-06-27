@@ -56,7 +56,6 @@ class CookieModel extends Equatable {
   Map<String, dynamic> toJson() => _$CookieModelToJson(this);
 }
 
-//@JsonSerializable()
 class CookieList extends Equatable {
   final List<CookieModel> cookies;
 
@@ -67,6 +66,4 @@ class CookieList extends Equatable {
 
   factory CookieList.fromJson(List<dynamic> json) =>
       CookieList(cookies: json.map((i) => CookieModel.fromJson(i)).toList());
-
-  /* Map<String, dynamic> toJson() => _$CookieListToJson(this); */
 }
