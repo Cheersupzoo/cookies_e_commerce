@@ -12,6 +12,7 @@ class CookieNetworkHandle {
 
   Future<CookieList> fetchCookie() async {
     Response response;
+    // checking client for testing mode
     if (client == null) {
       response = await http
           .get('https://ecommerce-product-app.herokuapp.com/products');
@@ -30,6 +31,7 @@ class CookieNetworkHandle {
 
   Future<CookieModel> getCookieDetail(int id) async {
     Response response;
+    // checking client for testing mode
     if (client == null) {
       response = await http
           .get('https://ecommerce-product-app.herokuapp.com/products/${id}');
