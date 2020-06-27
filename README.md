@@ -1,16 +1,27 @@
-# cookies_e_commerce
+# Cookies E-commerce
 
-A new Flutter project.
+A simple Cookies E-commerce App made with Flutter. This app uses Bloc pattern as a way to handle UI state and logic. It also implement simple network management and new Flutter transition: Container transform.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+### Clone this project and access it directory
+```
+git clone 
+cd
+```
 
-A few resources to get you started if this is your first Flutter project:
+### Install dependency
+```
+flutter pub get
+```
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+### Run the app
+```
+flutter run
+```
+* For smooth animation, recommend run in release/profile mode
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Testing
+```
+flutter test
+```
