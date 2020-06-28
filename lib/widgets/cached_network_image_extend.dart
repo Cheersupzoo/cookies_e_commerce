@@ -37,7 +37,7 @@ class CachedNetworkImageExtend extends StatelessWidget {
           )
         ]);
       },
-      placeholder: (context, url) => LoadingIndicator(),
+      placeholder: (context, url) => ImageLoadingIndicator(),
       errorWidget: (context, url, error) {
         return Image(
             fit: BoxFit.contain,
