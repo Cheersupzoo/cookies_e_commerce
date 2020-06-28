@@ -108,116 +108,125 @@ void main() {
     });
     testWidgets('should show Error when state is CookiesNotLoaded',
         (WidgetTester tester) async {
-      when(cookiesBloc.state).thenAnswer(
-        (_) => CookiesNotLoaded(
-            "Something Went Wrong.\nPlease try to refresh again."),
-      );
-      // Build our app and trigger a frame.
-      await tester.pumpWidget(MultiBlocProvider(
-        providers: [
-          BlocProvider<CookiesBloc>.value(value: cookiesBloc),
-        ],
-        child: MaterialApp(
-          title: 'Cookie E-commerce',
-          home: HomeScreen(title: 'Cookie E-commerce'),
-        ),
-      ));
+      await tester.runAsync(() async {
+        when(cookiesBloc.state).thenAnswer(
+          (_) => CookiesNotLoaded(
+              "Something Went Wrong.\nPlease try to refresh again."),
+        );
 
-      // Show AppBar
-      expect(find.text('Products'), findsOneWidget);
+        // Build our app and trigger a frame.
+        await tester.pumpWidget(MultiBlocProvider(
+          providers: [
+            BlocProvider<CookiesBloc>.value(value: cookiesBloc),
+          ],
+          child: MaterialApp(
+            title: 'Cookie E-commerce',
+            home: HomeScreen(title: 'Cookie E-commerce'),
+          ),
+        ));
+        await tester.pump(Duration(seconds: 2));
 
-      await tester.pumpAndSettle();
-      // get error message
-      expect(find.text("Something Went Wrong.\nPlease try to refresh again."),
-          findsOneWidget);
-      expect(find.byIcon(Icons.error_outline), findsOneWidget);
+        // Show AppBar
+        expect(find.text('Products'), findsOneWidget);
+
+        // get error message
+        expect(find.text("Something Went Wrong.\nPlease try to refresh again."),
+            findsOneWidget);
+        expect(find.byIcon(Icons.error_outline), findsOneWidget);
+      });
     });
 
     testWidgets('should show Loading indicator when state is CookiesLoading',
         (WidgetTester tester) async {
-      when(cookiesBloc.state).thenAnswer(
-        (_) => CookiesLoading(),
-      );
-      // Build our app and trigger a frame.
-      await tester.pumpWidget(MultiBlocProvider(
-        providers: [
-          BlocProvider<CookiesBloc>.value(value: cookiesBloc),
-        ],
-        child: MaterialApp(
-          title: 'Cookie E-commerce',
-          home: HomeScreen(title: 'Cookie E-commerce'),
-        ),
-      ));
+      await tester.runAsync(() async {
+        when(cookiesBloc.state).thenAnswer(
+          (_) => CookiesLoading(),
+        );
+        // Build our app and trigger a frame.
+        await tester.pumpWidget(MultiBlocProvider(
+          providers: [
+            BlocProvider<CookiesBloc>.value(value: cookiesBloc),
+          ],
+          child: MaterialApp(
+            title: 'Cookie E-commerce',
+            home: HomeScreen(title: 'Cookie E-commerce'),
+          ),
+        ));
+        await tester.pump(Duration(seconds: 2));
+        // Show AppBar
+        expect(find.text('Products'), findsOneWidget);
 
-      // Show AppBar
-      expect(find.text('Products'), findsOneWidget);
-
-      // Check loading indicator
-      await tester.pump(Duration(seconds: 1));
-      expect(find.byKey(ArchKeys.loading), findsOneWidget);
+        // Check loading indicator
+        await tester.pump(Duration(seconds: 2));
+        expect(find.byKey(ArchKeys.loading), findsWidgets);
+      });
     });
 
     testWidgets('should show Cookie Card when state is CookiesLoaded',
         (WidgetTester tester) async {
-      await binding.setSurfaceSize(Size(1080, 2160));
-      var parseCookies = CookieList.fromJson(await jsonDecode(mockCookies));
-      when(cookiesBloc.state).thenAnswer(
-        (_) => CookiesLoaded(parseCookies),
-      );
-      // Build our app and trigger a frame.
-      await tester.pumpWidget(Builder(
-        builder: (BuildContext context) {
-          return MultiBlocProvider(
-            providers: [
-              BlocProvider<CookiesBloc>.value(value: cookiesBloc),
-            ],
-            child: MaterialApp(
-              theme: ThemeData(
-                primaryColor: Color(0xFFE30909),
-                visualDensity: VisualDensity.adaptivePlatformDensity,
-                textTheme: GoogleFonts.montserratTextTheme(
-                  Theme.of(context).textTheme,
+      await tester.runAsync(() async {
+        await binding.setSurfaceSize(Size(1080, 2160));
+        var parseCookies = CookieList.fromJson(await jsonDecode(mockCookies));
+        when(cookiesBloc.state).thenAnswer(
+          (_) => CookiesLoaded(parseCookies),
+        );
+        // Build our app and trigger a frame.
+        await tester.pumpWidget(Builder(
+          builder: (BuildContext context) {
+            return MultiBlocProvider(
+              providers: [
+                BlocProvider<CookiesBloc>.value(value: cookiesBloc),
+              ],
+              child: MaterialApp(
+                theme: ThemeData(
+                  primaryColor: Color(0xFFE30909),
+                  visualDensity: VisualDensity.adaptivePlatformDensity,
+                  textTheme: GoogleFonts.montserratTextTheme(
+                    Theme.of(context).textTheme,
+                  ),
                 ),
+                title: 'Cookie E-commerce',
+                home: HomeScreen(title: 'Cookie E-commerce'),
               ),
-              title: 'Cookie E-commerce',
-              home: HomeScreen(title: 'Cookie E-commerce'),
-            ),
-          );
-        },
-      ));
+            );
+          },
+        ));
 
-      // Show AppBar
-      expect(find.text('Products'), findsOneWidget);
+        // Show AppBar
+        expect(find.text('Products'), findsOneWidget);
 
-      // Check Cookie List
-      await tester.pump(Duration(seconds: 1));
-      expect(find.text(parseCookies.cookies[0].title), findsWidgets);
-      expect(find.text("NEW"), findsWidgets);
+        // Check Cookie List
+        await tester.pump(Duration(seconds: 3));
+        expect(find.text(parseCookies.cookies[0].title), findsWidgets);
+        expect(find.text("NEW"), findsWidgets);
+      });
     });
 
     testWidgets(
-        'should show Blank Cookie List when state is CookiesLoadedWithEmptyList',
+        'should show blank Cookie List when state is CookiesLoadedWithEmptyList',
         (WidgetTester tester) async {
-      when(cookiesBloc.state).thenAnswer(
-        (_) => CookiesLoadedWithEmptyList(),
-      );
-      // Build our app and trigger a frame.
-      await tester.pumpWidget(MultiBlocProvider(
-        providers: [
-          BlocProvider<CookiesBloc>.value(value: cookiesBloc),
-        ],
-        child: MaterialApp(
-          title: 'Cookie E-commerce',
-          home: HomeScreen(title: 'Cookie E-commerce'),
-        ),
-      ));
+      await tester.runAsync(() async {
+        when(cookiesBloc.state).thenAnswer(
+          (_) => CookiesLoadedWithEmptyList(),
+        );
+        // Build our app and trigger a frame.
+        await tester.pumpWidget(MultiBlocProvider(
+          providers: [
+            BlocProvider<CookiesBloc>.value(value: cookiesBloc),
+          ],
+          child: MaterialApp(
+            title: 'Cookie E-commerce',
+            home: HomeScreen(title: 'Cookie E-commerce'),
+          ),
+        ));
 
-      // Show AppBar
-      expect(find.text('Products'), findsOneWidget);
+        // Show AppBar
+        expect(find.text('Products'), findsOneWidget);
 
-      // Check Error message
-      await tester.pump(Duration(seconds: 1));
-      expect(find.text("No cookies to show."), findsOneWidget);
+        // Check Error message
+        await tester.pump(Duration(seconds: 3));
+        expect(find.text("No cookies to show."), findsOneWidget);
+      });
     });
   });
 }
