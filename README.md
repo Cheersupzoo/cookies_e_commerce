@@ -7,6 +7,8 @@ A simple Cookies E-commerce App made with Flutter. This app uses Bloc pattern as
   <img hspace="10" src="docs/screenshot2.png" alt="screenshot with iphone11" height=480>
   <img hspace="10" src="docs/screenshot3.png" alt="screenshot with pixel3-2" height=480>
   <img hspace="10" src="docs/screenshot4.png" alt="screenshot with iphone11-2" height=480>
+  <img hspace="10" src="docs/animation-example.gif" alt="animation example on pixel3" height=480>
+  
 </p>
 
 ## Getting Started
