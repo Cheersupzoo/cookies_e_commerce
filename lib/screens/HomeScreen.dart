@@ -1,8 +1,10 @@
+import 'package:cookies_e_commerce/keys.dart';
 import 'package:cookies_e_commerce/models/cookie.dart';
 import 'package:cookies_e_commerce/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cookies_e_commerce/blocs/cookies/cookies.dart';
+import 'package:frefresh/frefresh.dart';
 
 class HomeScreen extends StatefulWidget {
   final String title;
@@ -34,37 +36,90 @@ class HomeScreenBody extends StatefulWidget {
 }
 
 class _HomeScreenBodyState extends State<HomeScreenBody> {
+  FRefreshController _frefreshcontroller;
+
+  @override
+  void initState() {
+    super.initState();
+    _frefreshcontroller = FRefreshController();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _frefreshcontroller.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final cookiesBloc = BlocProvider.of<CookiesBloc>(context);
+    Widget widgetToShow;
 
     return BlocBuilder(
         bloc: cookiesBloc,
         builder: (BuildContext context, CookiesState cookiesState) {
+          if (!(cookiesState is CookiesLoading))
+            _frefreshcontroller.finishRefresh();
+            
           if (cookiesState is CookiesLoading) {
-            return LoadingIndicator(key: Key('__CookiesLoading'));
+            widgetToShow = widgetToShow ??
+                _buildCookieLoading(context);
           } else if (cookiesState is CookiesLoaded) {
-            List<CookieModel> cookies = cookiesState.cookies.cookies;
-            return SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  _buildHeaderText(),
-                  _buildCookieCardWarpList(context, cookies),
-                ],
-              ),
-            );
+            final cookies = cookiesState.cookies.cookies;
+            widgetToShow = _buildCookiesLoaded(context, cookies);
           } else if (cookiesState is CookiesLoadedWithEmptyList) {
-            return _buildCookiesLoadedWithEmptyList(cookiesBloc);
+            widgetToShow = _buildCookiesLoadedWithEmptyList(
+                cookiesBloc, _frefreshcontroller);
           } else if (cookiesState is CookiesNotLoaded) {
-            return _buildCookiesNotLoaded(cookiesState, cookiesBloc, context);
+            widgetToShow = _buildCookiesNotLoaded(cookiesState.errorMessage,
+                cookiesBloc, context, _frefreshcontroller);
           }
+
+          return _pullToRefresh(cookiesBloc, widgetToShow);
         });
   }
 
-  Widget _buildCookiesLoadedWithEmptyList(CookiesBloc cookiesBloc) {
+  FRefresh _pullToRefresh(CookiesBloc cookiesBloc, Widget widgetToShow) {
+    return FRefresh(
+          header: LoadingIndicator(
+            key: ArchKeys.loading,
+          ),
+          controller: _frefreshcontroller,
+          headerHeight: 60.0,
+          headerTrigger: 120,
+          onRefresh: () => cookiesBloc.add(FetchCookies()),
+          child: widgetToShow,
+        );
+  }
+
+  SizedBox _buildCookieLoading(BuildContext context) {
+    return SizedBox(
+                height: MediaQuery.of(context).size.height,
+                child: LoadingIndicator(
+                  key: ArchKeys.loading,
+                ),
+              );
+  }
+
+  Widget _buildCookiesLoaded(BuildContext context, List<CookieModel> cookies) {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          _buildHeaderText(),
+          _buildCookieCardWarpList(context, cookies),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCookiesLoadedWithEmptyList(
+      CookiesBloc cookiesBloc, FRefreshController refreshController) {
     return GestureDetector(
-      onTap: () => cookiesBloc.add(FetchCookies()),
+      onTap: () {
+        cookiesBloc.add(FetchCookies());
+        refreshController.refresh();
+      },
       child: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
@@ -99,10 +154,13 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
     );
   }
 
-  Widget _buildCookiesNotLoaded(CookiesNotLoaded cookiesState,
-      CookiesBloc cookiesBloc, BuildContext context) {
+  Widget _buildCookiesNotLoaded(String errorMessage, CookiesBloc cookiesBloc,
+      BuildContext context, FRefreshController refreshController) {
     return GestureDetector(
-      onTap: () => cookiesBloc.add(FetchCookies()),
+      onTap: () {
+        cookiesBloc.add(FetchCookies());
+        refreshController.refresh();
+      },
       child: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
@@ -113,12 +171,11 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Icon(
-              Icons.error_outline,
-              size: 48,
-              color: Colors.grey[850],
-            ),
-              
-              Text(cookiesState.errorMessage,
+                Icons.error_outline,
+                size: 48,
+                color: Colors.grey[850],
+              ),
+              Text(errorMessage,
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 16, height: 2)),
             ],
